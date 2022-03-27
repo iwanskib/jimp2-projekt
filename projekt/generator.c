@@ -7,7 +7,6 @@ list_s_t generator (list_s_t list_s, int spojny, double wod, double wdo) {
     srand(time(NULL));
     int lw = list_s->ilosc_wierszy;
     int lk = list_s->ilosc_kolumn;
-    wod = -1, wdo = 1;
     int x[lw][lk]; //tablica z numerami punktów
 
     //wypelnia tablice 2-wymiarowa numerami punktow
