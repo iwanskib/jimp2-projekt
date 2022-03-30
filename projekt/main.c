@@ -1,7 +1,7 @@
 #include "struktury.h"
 #include "read_write.h"
-#include "dijkstra.h"
 #include "generator.h"
+#include "bfs.h"
 #include <getopt.h> // dodac do specyfikacji 
 
 char* usage = 
@@ -16,8 +16,8 @@ int main ( int argc, char**argv) {
 
 
 	int opt;
-	int k = 10;
-	int w = 10;
+	int k = 3;
+	int w = 3;
 	int s = 0; //zmienic w specyfikacji 
 	int e = k*w-1;
 	double f = 0;
@@ -85,7 +85,8 @@ int main ( int argc, char**argv) {
 		else fclose (inf);
 	} else {
 		list_s = initialize_lista( k,w, s,e);
-		generator(list_s,0);
+		generator(list_s, 1, 0, 1);
+
 			
 		if ( out != NULL  ) {
 			FILE *ouf = NULL;
@@ -108,6 +109,11 @@ int main ( int argc, char**argv) {
 			}
 		}
 	}
+	int czyspojny = bfs(list_s);
+	if (czyspojny == 0)
+		printf("Graf jest spójny (BFS)\n");
+	if (czyspojny == 1)
+		printf("Graf NIE jest spójny (BFS)\n");
 /*	int * wynik = dijkstra( list_s );
 	int i ;
 	for ( i = list_s->wynik-1; i >=0; i-- ) {

@@ -1,5 +1,5 @@
 #ifndef GENERATOR_H
-#define STRUKTURY_H
+#define GENERATOR_H
 
 #include "struktury.h"
 #include "read_write.h"
