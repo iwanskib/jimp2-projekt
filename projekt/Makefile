@@ -1,5 +1,5 @@
-git: main.o struktury.o read_write.o generator.o
-	$(CC) -o main main.o struktury.o read_write.o generator.o
+git: main.o struktury.o read_write.o generator.o dijkstra.o
+	$(CC) -o main main.o struktury.o read_write.o generator.o dijkstra.o
 test: main_test.o struktury.o read_write.o
 	$(CC) -o test main_test.o struktury.o read_write.o
 	./test mygraph
