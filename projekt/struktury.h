@@ -25,16 +25,23 @@ typedef struct {
 } *list_s_t;
 
 typedef struct {
-	int *q;
-	int *hq;
+	int place;
+	int top;
+} *elem;
+
+typedef struct {
+	elem *q;
 	int n;
 	int size;
+	double *d;
+	int *p;
 } *pq_t;
 
 list_s_t initialize_lista ( int ilosc_kolumn,int ilosc_wierszy, int start, int end );
 pq_t initialize_pq (int size);
-int  pq_add(pq_t pq, int x, double wg);
-int pq_pop(pq_t pq);
+void  pq_add(pq_t pq);
+int  pq_pop(pq_t pq);
+void pq_fix(pq_t pq, int x);
 void pq_free(pq_t pq);
 void lista_free ( list_s_t list_s );
 
