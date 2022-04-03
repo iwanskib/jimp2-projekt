@@ -9,13 +9,14 @@ list_s_t read_file ( FILE* inf) {
 	int size = 4*2+(2*(k-2)+2*(w-2))*3+((k-2)*(w-2))*4;
 	int wierz;
 	while (size--) {
-		fscanf(inf,"%d",&x);
+		if ( fscanf(inf,"%d",&x) == 1 ) {
 		while ((c = fgetc(inf)) != ':') {
-		} 
+		;}
 		fscanf(inf,"%lg",&y);
 		list_s->wierzcholki[wierz] = wstaw_na_poczatek(list_s->wierzcholki[wierz],x,y);
 		if ( ( c = fgetc(inf) ) == 10 ) {
 			wierz++;
+		}
 		}
 	}
 	return list_s;

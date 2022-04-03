@@ -3,11 +3,11 @@
 #include "generator.h"
 #include "dijkstra.h"
 #include "bfs.h"
-#include <getopt.h> // dodac do specyfikacji 
-#include <string.h> // dodac do specyfikacji
+#include <getopt.h> 
+#include <string.h> 
 
 char* usage = 
-	"Pomoc: %s [-k ilosc kolumn -k ilosc wierszy] [-s punkt poczatkowy -e punkt koncowy] [-f waga poczatkowa -t waga koncowa] -i plik wejsciowy -o plik wyjsciowy -g 0/1\n"
+	"Pomoc: %s [-k ilosc kolumn -w ilosc wierszy] [-s punkt poczatkowy -e punkt koncowy] [-f waga poczatkowa -t waga koncowa] -i plik wejsciowy -o plik wyjsciowy -g 0/1\n"
 	"	Jeżeli podamy plik wejściowy to\n"
 	"		Program wczyta graf z podanego pliku, wiec nie potrzebne jest podawanie wiekszosci flag\n"
 	"		mozliwe jest jednak nadal podanie wierzcholka poczatkowego i koncowego\n	"
@@ -22,7 +22,7 @@ int main ( int argc, char**argv) {
 	int opt;
 	int k = 10;
 	int w = 10;
-	int s = 0; //zmienic w specyfikacji 
+	int s = 0;  
 	int e;
 	double f = 0;
 	double t = 1;
@@ -33,7 +33,7 @@ int main ( int argc, char**argv) {
 	char *progname = argv[0];
 	list_s_t list_s;
 	
-	while (( opt = getopt (argc,argv, "k:w:s:e:o:f:t:i:g:")) != -1) { // dodac x do specyfikacji i pozmieniac flagi
+	while (( opt = getopt (argc,argv, "k:w:s:e:o:f:t:i:g:")) != -1) { 
 		switch (opt) {
 		case 'k':
 			k = atoi(optarg);
@@ -76,7 +76,7 @@ int main ( int argc, char**argv) {
 			fprintf (stderr,usage,progname);
 			return -2;	
 	}
-	if ( k <= 1 || w <= 1 || s < 0 || s > k*w-1 || e < 0 || e > k*w-1 || f < 0 || t < 0 || ( g != 0 && g!= 1) )   { 
+	if ( k <  1 || w <  1 || k*w > 835*835 || s < 0 || s > k*w-1 || e < 0 || e > k*w-1 || f < 0 || t < 0 || ( g != 0 && g!= 1) )   { 
 		fprintf(stderr,"\n%s: Nieprawdilowe dane wejsciowe!\n\n",argv[0]);
 		fprintf(stderr,usage,progname);
 		return -2;
@@ -101,7 +101,7 @@ int main ( int argc, char**argv) {
 			return -3;
 		}
 		fprintf(stderr,"");
-		if ((list_s = read_file(inf)) == NULL ) { //zmiana
+		if ((list_s = read_file(inf)) == NULL ) { 
 			fprintf(stderr, "%s: Zla tresc pliku wejsciowego: %s \n\n",argv[0],inp);
 			return -4;
 		}
@@ -110,12 +110,20 @@ int main ( int argc, char**argv) {
 			fprintf(stderr,"Podany graf jest niespojny\n");
 			return -1;
 		}
-		list_s->start = s;
-		list_s->end = e;
+		if ( y == -1 ) {
+			list_s->start = s;
+			list_s->end = list_s->ilosc_wierszy*list_s->ilosc_kolumn-1;
+		} else {
+			list_s->start = s;
+			list_s->end = e;
+		}
 	} else {
 		list_s = initialize_lista( k,w, s,e);
 		generator(list_s,g,f,t);
 		if ( bfs(list_s) == 1 ) {
+			char* xdd = "wynik.txt";
+			FILE*xd = fopen(xdd,"w"); 
+			write_file(xd,list_s);
 			fprintf(stderr,"Wygenerowany graf jest niespojny\n");
 			return -1;
 		}

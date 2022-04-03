@@ -43,6 +43,7 @@ int* dijkstra(list_s_t list_s) {
 	list_s->post = pq->p[list_s->end];
 	list_s->wynik = l;
 	pq_free(pq);
+	free(QS);
 	return wynik;
 }
 
