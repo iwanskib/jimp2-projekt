@@ -5,13 +5,18 @@ int* dijkstra(list_s_t list_s) {
 	pq_t pq = initialize_pq(size);
 	int* QS = malloc ( size*sizeof*(QS) );
 	int i;
-	pq->d[list_s->start] = 0;
-	for ( i = 0; i < size; i++ ) QS[i] = 0;		
-								
 	for ( i = 0; i < size; i++ ) {
-		pq_add(pq);	
+		pq_add(pq);
+		QS[i] = 0;	
 	}							
 	
+	int v = list_s->start;
+	pq->d[v] = 0;
+	int tmp = pq->q[0]->top; 
+	pq->q[0]->top = pq->q[v]->top; 
+	pq->q[v]->top = tmp;
+	pq->q[v]->place = 0;
+	pq->q[0]->place = v;
 	int u;	
 	for ( i = 0 ; i < size; i++ ) {
 		u = pq_pop(pq);
@@ -22,13 +27,11 @@ int* dijkstra(list_s_t list_s) {
        				pq->d [ iterator->x ] = pq->d [ u ] + iterator->waga;
       				pq->p [ iterator->x ] = u;
 				pq_fix(pq,iterator->x);
-			}
+			}	
 			iterator = iterator->next;
 		}
-		int j = 0;
-	}
-	
-
+	}	
+		
 	int* wynik = malloc(pq->size*sizeof*(wynik));
 	i = list_s->end;
 	int l = 0;
@@ -36,7 +39,9 @@ int* dijkstra(list_s_t list_s) {
 		wynik[l++] = pq->p[i];
 		i = pq->p[i];
 	}
-	fprintf(stderr,"wartosc najkrotszej sciezki: %lf\n",pq->d[list_s->end]);
+//	fprintf(stderr,"wartosc najkrotszej sciezki: %lf\n",pq->d[list_s->end]);
+	list_s->dost = pq->d[list_s->end];
+	list_s->post = pq->p[list_s->end];
 	list_s->wynik = l;
 	pq_free(pq);
 	return wynik;

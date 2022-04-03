@@ -17,7 +17,7 @@ pq_t initialize_pq ( int s ) {
 		pq->q[i] = malloc ( sizeof*(pq->q[i]));
 	}
 	pq->d = malloc ( s*sizeof*(pq->d));
-	for ( i = 0; i < s; i++ ) pq->d[i] = 1.7976931348623157E+308;
+	for ( i = 0; i < s; i++ ) pq->d[i] =  1.7976931348623157E+308;
 	pq->p = malloc ( s*sizeof*(pq->p));
 	for ( i = 0; i < s; i++ ) pq->p[i] = -1;
 	pq->n = 0;
@@ -50,7 +50,7 @@ void pq_add( pq_t pq)  {
 int  pq_pop( pq_t pq ) {
 	int ret = pq->q[0]->top;
 	pq->q[0]->top = pq->q[--pq->n]->top;
-	pq->q[0]->place = 0;
+	pq->q[pq->q[0]->top]->place = 0;
 	int l,i,j,right = 0,left = 0;
 	i = 0;
 	while ( 1 ) {
@@ -79,7 +79,7 @@ void pq_fix ( pq_t pq, int x) {
 	i = pq->q[x]->place;
 	while ( i != 0 ) {
 		j = (i-1)/ 2;
-		if ( pq->d[pq->q[i]->top] >=  pq->d[pq->q[j]->top] ) break;
+		if ( pq->d[pq->q[j]->top] <=  pq->d[pq->q[i]->top] ) break;
 		int tmp = pq->q[j]->top;
 		pq->q[j]->top = pq->q[i]->top;
 		pq->q[i]->top = tmp;
@@ -88,6 +88,8 @@ void pq_fix ( pq_t pq, int x) {
 		i = j;
 	}
 }
+
+
 void pq_free( pq_t pq) {
 	free(pq->q);
 	free(pq);

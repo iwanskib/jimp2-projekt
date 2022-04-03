@@ -10,16 +10,13 @@ list_s_t read_file ( FILE* inf) {
 	int wierz;
 	while (size--) {
 		fscanf(inf,"%d",&x);
-		while ((c = fgetc(inf)) != ':'); 
+		while ((c = fgetc(inf)) != ':') {
+		} 
 		fscanf(inf,"%lg",&y);
-		//fprintf(stderr,"%d :%lf ",x,y);
 		list_s->wierzcholki[wierz] = wstaw_na_poczatek(list_s->wierzcholki[wierz],x,y);
-		if ( (c = fgetc(inf)) == 32 ) {
-			if ( (c = fgetc(inf)) == 10)
-				wierz++;
-		}
-		else if ( c == 10 )
+		if ( ( c = fgetc(inf) ) == 10 ) {
 			wierz++;
+		}
 	}
 	return list_s;
 }

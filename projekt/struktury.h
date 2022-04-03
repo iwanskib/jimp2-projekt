@@ -21,6 +21,8 @@ typedef struct {
 	int start;
 	int end;
 	int wynik;
+	double dost;
+	int post;
 	list_t *wierzcholki;
 } *list_s_t;
 

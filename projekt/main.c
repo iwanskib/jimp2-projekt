@@ -7,7 +7,7 @@
 #include <string.h> // dodac do specyfikacji
 
 char* usage = 
-	"Pomoc: %s [-k ilosc kolumn -k ilosc wierszy] [-s punkt poczatkowy -e punkt koncowy] [-f waga poczatkowa -t waga koncowa] -i plik wejsciowy -o plik wyjsciowy -x 0/1\n"
+	"Pomoc: %s [-k ilosc kolumn -k ilosc wierszy] [-s punkt poczatkowy -e punkt koncowy] [-f waga poczatkowa -t waga koncowa] -i plik wejsciowy -o plik wyjsciowy -g 0/1\n"
 	"	Jeżeli podamy plik wejściowy to\n"
 	"		Program wczyta graf z podanego pliku, wiec nie potrzebne jest podawanie wiekszosci flag\n"
 	"		mozliwe jest jednak nadal podanie wierzcholka poczatkowego i koncowego\n	"
@@ -27,14 +27,13 @@ int main ( int argc, char**argv) {
 	double f = 0;
 	double t = 1;
 	char *inp = NULL;
-	char *out = "graf.txt";
-	
-	int x = 0;
+	char *out = "graf.txt\0";
+	int  g;	
 	int y = -1;
 	char *progname = argv[0];
 	list_s_t list_s;
 	
-	while (( opt = getopt (argc,argv, "k:w:s:e:f:t:i:o:x")) != -1) { // dodac x do specyfikacji i pozmieniac flagi
+	while (( opt = getopt (argc,argv, "k:w:s:e:o:f:t:i:g:")) != -1) { // dodac x do specyfikacji i pozmieniac flagi
 		switch (opt) {
 		case 'k':
 			k = atoi(optarg);
@@ -46,7 +45,11 @@ int main ( int argc, char**argv) {
 			s = atoi(optarg);
 			break;
 		case 'e':
-			{e = atoi(optarg); y = 1;}
+			e = atoi(optarg); 
+			y = 1;
+			break;
+		case 'g':
+			g = atoi(optarg);
 			break;
 		case 'f':
 			f = atof(optarg);
@@ -59,9 +62,6 @@ int main ( int argc, char**argv) {
 			break;
 		case 'o': 
 			out = optarg;
-			break;
-		case 'x':
-			x = atoi(optarg);
 			break;
 		default:
 		fprintf(stderr,usage,progname);
@@ -76,18 +76,19 @@ int main ( int argc, char**argv) {
 			fprintf (stderr,usage,progname);
 			return -2;	
 	}
-	if ( k <= 1 || w <= 1 || s < 0 || s > k*w-1 || e < 0 || e > k*w-1 || f < 0 || t < 0 || ( x != 0 && x!= 1) )   { 
-		fprintf(stderr,"\n%s: Nieprawdilowe dane wejsciowe!%d\n\n",argv[0],k);
+	if ( k <= 1 || w <= 1 || s < 0 || s > k*w-1 || e < 0 || e > k*w-1 || f < 0 || t < 0 || ( g != 0 && g!= 1) )   { 
+		fprintf(stderr,"\n%s: Nieprawdilowe dane wejsciowe!\n\n",argv[0]);
 		fprintf(stderr,usage,progname);
 		return -2;
 	}
+	if ( strcmp(out,"stdout") != 0 ) 
 	if ( out[strlen(out)-1] != 't' ||  out[strlen(out)-2] != 'x' || out[strlen(out)-3] != 't'|| out[strlen(out)-4] != '.' ) {
 		fprintf(stderr, "\n%s: Nieprawidłowy format pliku wyjściowego. Graf zostanie wypisany do pliku graf.txt\n",argv[0]);
 		out = "graf.txt";
 	}
 	if ( inp != NULL )
-	if ( inp[strlen(out)-1] != 't' ||  inp[strlen(out)-2] != 'x' || inp[strlen(out)-3] != 't'|| inp[strlen(out)-4] != '.' ) {
-		fprintf(stderr, "\n%s: Nieprawidłowy format pliku wejściowego. Oczekiwany format .txt\n",argv[0]);
+	if ( inp[strlen(inp)-1] != 't' ||  inp[strlen(inp)-2] != 'x' || inp[strlen(inp)-3] != 't'|| inp[strlen(inp)-4] != '.' ) {
+		fprintf(stderr, "\n%s: Nieprawidłowy format pliku wejściowego. Oczekiwany format .txt. Podane rozszerzenie: %c%c%c%c\n",argv[0],inp[strlen(inp)-1],inp[strlen(inp)-2],inp[strlen(inp)-3],inp[strlen(inp)-4]);	
 		return -2;
 	}
 	if ( y == -1 ) 
@@ -105,11 +106,27 @@ int main ( int argc, char**argv) {
 			return -4;
 		}
 		else fclose (inf);
+		if ( bfs(list_s) == 1 ) {
+			fprintf(stderr,"Podany graf jest niespojny\n");
+			return -1;
+		}
+		list_s->start = s;
+		list_s->end = e;
 	} else {
 		list_s = initialize_lista( k,w, s,e);
-		generator(list_s,x,f,t);
-		if ( strcmp(out,"stdout") != 0 && out != NULL  ) {
-			if ( out != NULL  ) {
+		generator(list_s,g,f,t);
+		if ( bfs(list_s) == 1 ) {
+			fprintf(stderr,"Wygenerowany graf jest niespojny\n");
+			return -1;
+		}
+		if (strcmp(out,"stdout") == 0 ){
+			FILE *ouf = stdout;
+			if ( write_file ( ouf, list_s ) == 1 ) {
+				fprintf (stderr, "%s: Wykryto zly format pliku wyjsciowego: %s \n\n", argv[0],out);
+				return -6;
+			}
+		}
+		else if ( strcmp(out,"stdout") != 0 ) {
 			FILE *ouf = NULL;
 			ouf = fopen ( out, "w");
 			if ( ouf == NULL ) {
@@ -121,21 +138,8 @@ int main ( int argc, char**argv) {
 				return -6;
 			}
 			else fclose(ouf);
-			}
-		}
-		else if (strcmp(out,"stdout") == 0 ){
-			FILE *ouf = stdout;
-			if ( write_file ( ouf, list_s ) == 1 ) {
-				fprintf (stderr, "%s: Wykryto zly format pliku wyjsciowego: %s \n\n", argv[0],out);
-				return -6;
-			}
 		}
 	}
-/*	if ( BFS() == 1 ) {
-		fprintf(stdout,"\n%s: Podany graf jest niespojny. Nie mozna znalezc najktrotszej sciezki\n",argv[0]);
-		return 1;
-	} 
-*/	
 	int* wynik = dijkstra( list_s );
 	int i ;
 	for ( i = list_s->wynik-1; i >=0; i-- ) {

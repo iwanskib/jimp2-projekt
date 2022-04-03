@@ -28,7 +28,6 @@ int bfs(list_s_t list_s) {
     	}
 		vz++;
 	}
-    printf("KONIEC BFS\n");
 
 	int wynik = 0;
 	for (int koniec = 0; koniec < ilosc_wierzcholkow; koniec++) {
@@ -36,7 +35,6 @@ int bfs(list_s_t list_s) {
 			wynik++;
 	}
 	if (wynik == ilosc_wierzcholkow) {
-		printf("zwracam zero\n");
 		return 0;
 	}
 	else 
