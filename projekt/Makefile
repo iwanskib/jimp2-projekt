@@ -15,4 +15,5 @@ test: ../testowanie/main-testowanie.o struktury.o dijkstra.o generator.o
 .PHONY: clean
 
 clean:
-	-rm *.o *.out test graf
+	mv *.txt ../dane
+	rm *.o *.out test graf

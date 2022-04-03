@@ -119,14 +119,7 @@ int main ( int argc, char**argv) {
 		}
 	} else {
 		list_s = initialize_lista( k,w, s,e);
-		generator(list_s,g,f,t);
-		if ( bfs(list_s) == 1 ) {
-			char* xdd = "wynik.txt";
-			FILE*xd = fopen(xdd,"w"); 
-			write_file(xd,list_s);
-			fprintf(stderr,"Wygenerowany graf jest niespojny\n");
-			return -1;
-		}
+		generator(list_s,g,f,t);	
 		if (strcmp(out,"stdout") == 0 ){
 			FILE *ouf = stdout;
 			if ( write_file ( ouf, list_s ) == 1 ) {
@@ -148,6 +141,11 @@ int main ( int argc, char**argv) {
 			else fclose(ouf);
 		}
 	}
+	if ( bfs(list_s) == 1 ) {
+			fprintf(stderr,"Podany graf jest niespojny\n");
+			return -1;
+		}
+
 	int* wynik = dijkstra( list_s );
 	int i ;
 	fprintf(stdout,"Wartość najkrotszej sciezki: %lf\n",list_s->dost);

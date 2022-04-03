@@ -91,10 +91,18 @@ void pq_fix ( pq_t pq, int x) {
 
 
 void pq_free( pq_t pq) {
+	free(pq->d);
+	free(pq->p);
+	int i ;
+	for ( i = 0; i < pq->size; i++ ) 
+		free(pq->q[i]);
 	free(pq->q);
 	free(pq);
 }
 void lista_free ( list_s_t list_s ) {
+	int i;
+	for ( i = 0; i < list_s->ilosc_wierszy*list_s->ilosc_kolumn; i++ ) 
+		free(list_s->wierzcholki[i]);
 	free(list_s->wierzcholki);
 	free(list_s);
 }
