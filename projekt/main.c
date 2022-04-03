@@ -142,6 +142,7 @@ int main ( int argc, char**argv) {
 	}
 	int* wynik = dijkstra( list_s );
 	int i ;
+	fprintf(stdout,"Wartość najkrotszej sciezki: %lf\n",list_s->dost);
 	for ( i = list_s->wynik-1; i >=0; i-- ) {
 		fprintf(stdout,"%d - > ",wynik[i]);
 	}
