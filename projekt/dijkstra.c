@@ -39,7 +39,6 @@ int* dijkstra(list_s_t list_s) {
 		wynik[l++] = pq->p[i];
 		i = pq->p[i];
 	}
-//	fprintf(stderr,"wartosc najkrotszej sciezki: %lf\n",pq->d[list_s->end]);
 	list_s->dost = pq->d[list_s->end];
 	list_s->post = pq->p[list_s->end];
 	list_s->wynik = l;
