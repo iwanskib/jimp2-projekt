@@ -1,5 +1,5 @@
 git: main.o struktury.o read_write.o generator.o dijkstra.o bfs.o 
-	$(CC) -o graf main.o struktury.o read_write.o generator.o bfs.o  dijkstra.o -g
+	$(CC) -o graf main.o struktury.o read_write.o generator.o bfs.o  dijkstra.o 
 plik: ../testowanie/main_test.o struktury.o read_write.o
 	$(CC) -o test ../testowanie/main_test.o struktury.o read_write.o
 	./test ../dane/mygraph
